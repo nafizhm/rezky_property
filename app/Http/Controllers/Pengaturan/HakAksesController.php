@@ -29,9 +29,9 @@ class HakAksesController extends Controller
         return view('admin.pengaturan.hak_akses.index', compact('users', 'permissions'));
     }
 
-    public static function getUserPermissions()
+    public static function getUserPermissions(?string $routeName = null)
     {
-        $routeName = request()->route()->getName();
+        $routeName = $routeName ?? request()->route()?->getName();
         $userId    = Auth::id();
 
         $menu = Menu::where('route_name', $routeName)->first();

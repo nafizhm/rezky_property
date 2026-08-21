@@ -317,20 +317,16 @@
             });
         });
 
-        $(document).on('click', '.edit-button', function() {
-            var url = $(this).data('url');
+        $(document).on('click', '.edit-media-button', function(event) {
+            event.preventDefault();
 
-            $.get(url, function(response) {
-                if (response.status === 'success') {
-                    $('#modalFormLabel').text('Edit Pengaturan Media');
-                    $('#primary_id').val(response.data.id);
-                    $('#jenis_data').val(response.data.jenis_data);
+            const button = $(this);
+            $('#modalFormLabel').text('Edit Pengaturan Media');
+            $('#primary_id').val(button.attr('data-id'));
+            $('#jenis_data').val(button.attr('data-jenis'));
 
-                    setPreview(response.data.nama_file, 'config_media', 'previewFile');
-
-                    $('#modalForm').modal('show');
-                }
-            });
+            setPreview(button.attr('data-file'), 'config_media', 'previewFile');
+            $('#modalForm').modal('show');
         });
 
         $('#modalForm').on('hidden.bs.modal', function() {
@@ -407,6 +403,16 @@
                                 '<span class="invalid-feedback" role="alert"><strong>' +
                                 val[0] + '</strong></span>'
                             );
+                        });
+                    } else {
+                        let message = xhr.responseJSON?.error || xhr.responseJSON?.message ||
+                            'Berkas gagal di-upload. Silakan coba kembali.';
+
+                        audio.play();
+                        toastr.error(message, "GAGAL!", {
+                            progressBar: true,
+                            timeOut: 5000,
+                            positionClass: "toast-bottom-right",
                         });
                     }
 

@@ -7,6 +7,7 @@ use App\Models\PengaturanMedia;
 use App\Traits\LogAktivitasTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -15,7 +16,9 @@ class PengaturanMediaController extends Controller
     use LogAktivitasTrait;
     public function index(Request $request)
     {
-        $permissions = HakAksesController::getUserPermissions();
+        // Pengaturan media sekarang menjadi bagian dari halaman Pengaturan Aplikasi.
+        // Gunakan hak akses menu induknya, bukan menu media lama yang disembunyikan.
+        $permissions = HakAksesController::getUserPermissions('pengaturan-profil.index');
         if ($request->ajax()) {
 
             $data = PengaturanMedia::where('stt_aktif', 1)
@@ -30,11 +33,13 @@ class PengaturanMediaController extends Controller
                     return '<img src="' . $url . '" height="50">';
                 })
                 ->addColumn('action', function ($row) use ($permissions) {
-                    $editUrl = route('pengaturan-media.edit', $row->id);
                     $btn     = '<div class="text-center">';
 
                     if ($permissions['edit']) {
-                        $btn .= '<button class="btn btn-primary btn-sm edit-button" data-id="' . e($row->id) . '" data-url="' . e($editUrl) . '">Edit</button>';
+                        $btn .= '<button type="button" class="btn btn-primary btn-sm edit-media-button"'
+                            . ' data-id="' . e($row->id) . '"'
+                            . ' data-jenis="' . e($row->jenis_data) . '"'
+                            . ' data-file="' . e($row->nama_file) . '">Edit</button>';
                     }
 
                     $btn .= '</div>';
@@ -74,18 +79,18 @@ class PengaturanMediaController extends Controller
         $request->validate($rules, $messages);
 
         DB::beginTransaction();
+        $newFilePath = null;
+        $oldFilename = $data->nama_file;
         try {
 
-            if ($request->hasFile('nama_file')) {
-                if (! empty($data->nama_file) && file_exists(public_path('config_media/' . $data->nama_file))) {
-                    unlink(public_path('config_media/' . $data->nama_file));
-                }
+            $mediaDirectory = public_path('config_media');
+            File::ensureDirectoryExists($mediaDirectory);
 
-                $nama_file = $request->file('nama_file');
-                $ext       = $nama_file->getClientOriginalExtension();
-                $filename  = Str::random(25) . '.' . $ext;
-                $nama_file->move(public_path('config_media/'), $filename);
-            }
+            $nama_file = $request->file('nama_file');
+            $ext       = strtolower($nama_file->getClientOriginalExtension());
+            $filename  = Str::random(25) . '.' . $ext;
+            $nama_file->move($mediaDirectory, $filename);
+            $newFilePath = $mediaDirectory . DIRECTORY_SEPARATOR . $filename;
 
             $db = [
                 'nama_file' => $filename,
@@ -96,9 +101,22 @@ class PengaturanMediaController extends Controller
 
             DB::commit();
 
+            // Hapus setelah database berhasil diperbarui dan hanya bila file lama
+            // tidak sedang dipakai oleh konfigurasi media yang lain.
+            if (! empty($oldFilename)
+                && $oldFilename !== $filename
+                && ! PengaturanMedia::where('id', '!=', $data->id)
+                    ->where('nama_file', $oldFilename)
+                    ->exists()) {
+                File::delete($mediaDirectory . DIRECTORY_SEPARATOR . $oldFilename);
+            }
+
             return response()->json(['status' => 'success']);
         } catch (\Exception $e) {
             DB::rollBack();
+            if ($newFilePath) {
+                File::delete($newFilePath);
+            }
             return response()->json([
                 'status' => 'error',
                 'error'  => $e->getMessage(),

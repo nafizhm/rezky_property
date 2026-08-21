@@ -64,7 +64,8 @@
     .brand-small{text-align:center;letter-spacing:.22em;font-size:13px;font-weight:600;color:#35433e;margin:0 0 2px;text-transform:uppercase}
     h1{
       font-family:'Playfair Display',serif;text-align:center;margin:0;color:var(--green);
-      font-size:45px;line-height:.98;letter-spacing:.03em;
+      font-size:26px;line-height:1.2;letter-spacing:.02em;font-weight:700;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
     }
     .tagline{text-align:center;color:#596a62;font-size:13px;margin:14px 0 20px;font-weight:500}
     .divider{display:flex;align-items:center;gap:12px;margin:0 auto 20px;max-width:250px;color:var(--gold)}
@@ -78,7 +79,7 @@
     .invalid-feedback{display:block;font-size:12px;color:#dc3545;margin-top:4px;font-weight:500}
     .spinner-border{display:inline-block;width:20px;height:20px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spinner-border .75s linear infinite}.d-none{display:none!important}
     @keyframes spinner-border{to{transform:rotate(360deg)}}
-    @media(max-width:640px){body{background-position:center}.page{padding:18px}.login-card{padding:30px 22px 24px;border-radius:22px}h1{font-size:36px}.brand-small{font-size:11px}.row{font-size:12px}.footer{text-align:center;flex-direction:column;gap:8px}}
+    @media(max-width:640px){body{background-position:center}.page{padding:18px}.login-card{padding:30px 22px 24px;border-radius:22px}h1{font-size:22px}.brand-small{font-size:11px}.row{font-size:12px}.footer{text-align:center;flex-direction:column;gap:8px}}
   </style>
 </head>
 <body>

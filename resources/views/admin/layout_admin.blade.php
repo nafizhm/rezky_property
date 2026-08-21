@@ -377,6 +377,7 @@
 
                         <form id="logout-form" action="{{ route('admin.logout') }}" method="POST"
                             style="display: none;">
+                            @csrf
                         </form>
                     </ul>
                 </nav>
@@ -604,33 +605,18 @@
                             `<span class="spinner-border spinner-border-sm mx-2" role="status"></span> Logging out...`;
                         confirmBtn.disabled = true;
 
-                        fetch('{{ route('refresh.csrf') }}')
-                            .then(response => response.json())
-                            .then(data => {
-                                let form = document.getElementById('logout-form');
-                                let tokenField = form.querySelector('input[name="_token"]');
+                        const form = document.getElementById('logout-form');
 
-                                if (!tokenField) {
-                                    tokenField = document.createElement('input');
-                                    tokenField.type = 'hidden';
-                                    tokenField.name = '_token';
-                                    form.appendChild(tokenField);
-                                }
+                        if (!form) {
+                            confirmBtn.disabled = false;
+                            btnText.innerHTML = `Ya, Logout!`;
+                            Swal.showValidationMessage('Form logout tidak ditemukan.');
+                            resolve(false);
+                            return;
+                        }
 
-                                tokenField.value = data.token;
-
-                                resolve();
-
-                                form.submit();
-                            })
-                            .catch(() => {
-                                confirmBtn.disabled = false;
-                                btnText.innerHTML = `Ya, Logout!`;
-
-                                Swal.showValidationMessage(
-                                    `Gagal menghubungi server. Coba lagi.`
-                                );
-                            });
+                        resolve(true);
+                        form.submit();
                     });
                 }
             });
