@@ -1,6 +1,6 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
-@section('title', 'Booking Dealaska')
+@section('title', 'Booking Rezky Property')
 
 @push('styles')
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -617,7 +617,7 @@
 
                                <div class="form-group row mb-3">
                                     <label class="control-label col-sm-3">Lokasi Perumahan <span style="color: red;">*</span></label>
-                                    <div class="col-sm-9">
+                                    <div class="col-sm-4">
                                         <select class="form-control select-lokasi" name="id_lokasi" id="id_lokasi">
                                             <option value=""></option>
                                             @foreach ($lokasi as $l)
@@ -625,19 +625,24 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                </div>
-
-                                <div class="form-group row mb-3">
-                                    <label class="control-label col-sm-3">Blok/Kav <span style="color: red;">*</span></label>
-                                    <div class="col-sm-9">
+                                    <label class="control-label col-sm-2">Blok/Kav <span style="color: red;">*</span></label>
+                                    <div class="col-sm-3">
                                         <select name="id_kavling" id="id_kavling" class="form-control select-kavling"></select>
                                     </div>
                                 </div>
 
-                                <div id="rincian-harga-container">
-                                    <div class="text-muted">Pilih kavling terlebih dahulu untuk menampilkan rincian harga.</div>
+                                <div class="form-group row mb-3">
+                                    <label class="control-label col-sm-3">Harga Jual</label>
+                                    <div class="col-sm-4">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Rp.</span>
+                                            </div>
+                                            <input type="text" name="total_harga" id="total_harga"
+                                                class="form-control" readonly disabled placeholder="Pilih kavling terlebih dahulu">
+                                        </div>
+                                    </div>
                                 </div>
-                                <input type="hidden" name="total_harga" id="total_harga" value="">
                             </div>
                             <hr>
 
@@ -697,6 +702,7 @@
                                                 type="text">
                                         </div>
                                     </div>
+                                </div>
                                 </div>
                             </div>
 
@@ -910,6 +916,7 @@
             });
             $('.select-kavling').select2({
                 theme: "bootstrap4",
+                placeholder: "Pilih Kavling",
             });
             $('.select-marketing').select2({
                 theme: "bootstrap4",
@@ -938,60 +945,14 @@
                 theme: "bootstrap4",
                 placeholder: "Pilih Pekerjaan",
             });
-        });
-
-        $(document).ready(function() {
-            $('.select-lokasi').select2({
-                theme: "bootstrap4",
-                placeholder: "Pilih Lokasi",
-            });
-
-            $('.select-kavling').select2({
-                theme: "bootstrap4",
-                placeholder: "Pilih Kavling",
-            });
 
             const routeGetKavling = "{{ route('booking.getKavling', ':id') }}";
             const routeGetHarga = "{{ route('booking.getHargaKavling', ':id') }}";
 
-            function renderRincianHarga(rincian, total) {
-                let container = $('#rincian-harga-container');
-                container.empty();
-
-                if (!rincian || rincian.length === 0) {
-                    container.html('<div class="text-muted">Tidak ada rincian biaya.</div>');
-                    $('#total_harga').val('');
-                    return;
-                }
-
-                let html = '';
-                rincian.forEach(function(item) {
-                    if ((item.nilai || 0) <= 0) return;
-                    html += '<div class="form-group row">';
-                    html += '<label class="control-label col-sm-3">' + item.nama + '</label>';
-                    html += '<div class="col-sm-4">';
-                    html += '<div class="input-group">';
-                    html += '<div class="input-group-prepend"><span class="input-group-text">Rp.</span></div>';
-                    html += '<input type="text" class="form-control" readonly value="' + item.nilai.toLocaleString('id-ID') + '">';
-                    html += '</div></div></div>';
-                });
-
-                html += '<div class="form-group row">';
-                html += '<label class="control-label col-sm-3"><strong>Total Harga</strong></label>';
-                html += '<div class="col-sm-4">';
-                html += '<div class="input-group">';
-                html += '<div class="input-group-prepend"><span class="input-group-text">Rp.</span></div>';
-                html += '<input type="text" class="form-control" readonly value="' + (total || 0).toLocaleString('id-ID') + '">';
-                html += '</div></div></div>';
-
-                container.html(html);
-                $('#total_harga').val(total || 0);
-            }
-
             $('#id_lokasi').on('change', function() {
                 let idLokasi = $(this).val();
                 $('#id_kavling').html('<option value="">Loading...</option>').trigger('change');
-                renderRincianHarga([], 0);
+                $('#total_harga').val('').attr('placeholder', 'Pilih kavling terlebih dahulu');
 
                 if (idLokasi) {
                     const urlKavling = routeGetKavling.replace(':id', idLokasi);
@@ -1012,10 +973,17 @@
                 if (idKavling) {
                     const urlHarga = routeGetHarga.replace(':id', idKavling);
                     $.get(urlHarga, function(data) {
-                        renderRincianHarga(data.rincian_biaya, data.total_harga);
+                        let hargaJual = 0;
+                        if (data.rincian_biaya && data.rincian_biaya.length) {
+                            let hr = data.rincian_biaya.find(function(item) {
+                                return item.nama === 'Harga Rumah';
+                            });
+                            hargaJual = hr ? hr.nilai : data.total_harga;
+                        }
+                        $('#total_harga').val(hargaJual ? hargaJual.toLocaleString('id-ID') : '').attr('placeholder', '0');
                     });
                 } else {
-                    renderRincianHarga([], 0);
+                    $('#total_harga').val('').attr('placeholder', 'Pilih kavling terlebih dahulu');
                 }
             });
 
@@ -1056,19 +1024,6 @@
             let submitBtn = $('#submitBtn');
             let spinner = submitBtn.find('.spinner-border');
             let btnText = submitBtn.find('.button-text');
-
-            let totalHarga = parseInt($('#total_harga').val()) || 0;
-            if (totalHarga <= 0) {
-                toastr.error("Harga kavling belum ditentukan!", "GAGAL!", {
-                    progressBar: true,
-                    timeOut: 3500,
-                    positionClass: "toast-bottom-right",
-                });
-                spinner.addClass('d-none');
-                btnText.text('Kirim Data');
-                submitBtn.prop('disabled', false);
-                return;
-            }
 
             spinner.removeClass('d-none');
             btnText.text('Mengirim...');
