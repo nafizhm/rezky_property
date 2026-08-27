@@ -446,15 +446,15 @@
                                 <h5 class="stage-title">Data Pribadi</h5>
                             </div>
                                 <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label">Tanggal <span style="color: red;">*</span></label>
-                                    <div class="col-sm-3">
+                                    <label class="col-sm-2 col-form-label">Tanggal <span style="color: red;">*</span></label>
+                                    <div class="col-sm-4">
                                         <input type="date" class="form-control" id="tanggal" name="tanggal"
                                             value="{{ date('Y-m-d') }}">
                                     </div>
                                 </div>
 
                                  <div class="form-group row">
-<label class="col-sm-3 col-form-label">Nama Lengkap <span
+<label class="col-sm-2 col-form-label">Nama Lengkap <span
                                              style="color: red;">*</span></label>
                                     <div class="col-sm-9">
                                         <input name="nama_lengkap" id="nama_lengkap" class="form-control" type="text"
@@ -463,7 +463,7 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="control-label col-sm-3">NIK <span style="color: red;">*</span></label>
+                                    <label class="control-label col-sm-2">NIK <span style="color: red;">*</span></label>
                                     <div class="col-sm-4">
                                         <input name="nik" id="nik" class="form-control" type="text"
                                         placeholder="Masukkan NIK">
@@ -471,26 +471,26 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="control-label col-sm-3">Tempat Lahir <span style="color: red;">*</span></label>
+                                    <label class="control-label col-sm-2">Tempat Lahir <span style="color: red;">*</span></label>
                                     <div class="col-sm-4">
                                         <input name="tempat_lahir" id="tempat_lahir" class="form-control" type="text"
                                         placeholder="Masukkan tempat lahir">
 
                                     </div>
                                     <label class="control-label col-sm-2">Tanggal Lahir <span style="color: red;">*</span></label>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-4">
                                         <input name="tgl_lahir" id="tgl_lahir" class="form-control" type="date">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="control-label col-sm-3">No. Telp / WA <span style="color: red;">*</span></label>
+                                    <label class="control-label col-sm-2">No. Telp / WA <span style="color: red;">*</span></label>
                                     <div class="col-sm-4">
                                         <input name="no_telp" id="no_telp" class="form-control" type="text"
                                          placeholder="Contoh: 08123*****">
                                     </div>
                                     <label class="control-label col-sm-2">Jenis Kelamin <span style="color: red;">*</span></label>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-4">
                                         <select class="form-control select-jk" name="jenis_kelamin" id="jenis_kelamin">
                                             <option value=""></option>
                                             <option value="Laki-laki">Laki-laki</option>
@@ -500,20 +500,20 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="control-label col-sm-3">Email</label>
+                                    <label class="control-label col-sm-2">Email</label>
                                     <div class="col-sm-4">
                                         <input name="email" id="email" class="form-control" type="text"
                                         placeholder="Contoh: xyz@gmail.com">
                                     </div>
                                     <label class="control-label col-sm-2">NPWP</label>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-4">
                                         <input name="npwp" id="npwp" class="form-control" type="text"
                                         placeholder="Masukan npwp">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="control-label col-sm-3">Pekerjaan</label>
+                                    <label class="control-label col-sm-2">Pekerjaan</label>
                                     <div class="col-sm-4">
                                         <select class="form-control select-pekerjaan" name="pekerjaan"
                                             id="pekerjaan">
@@ -538,13 +538,13 @@
                                         </select>
                                     </div>
                                     <label class="control-label col-sm-2">No. BPJS Kes</label>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-4">
                                         <input name="no_bpjs_kes" id="no_bpjs_kes" class="form-control" type="text"
                                          placeholder="Masukan BPJS Kes">
                                     </div>
                                 </div>
                                 <div class="form-group row" id="row-pekerjaan-lain" style="display: none;">
-                                    <label class="control-label col-sm-3">Pekerjaan Lainnya</label>
+                                    <label class="control-label col-sm-2">Pekerjaan Lainnya</label>
                                     <div class="col-sm-4">
                                         <input type="text" class="form-control" name="pekerjaan_lain" id="pekerjaan_lain"
                                             placeholder="Masukkan pekerjaan">
@@ -552,20 +552,18 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="control-label col-sm-3">Alamat KTP <span style="color: red;">*</span></label>
-                                    <div class="col-sm-9">
+                                    <label class="control-label col-sm-2">Alamat KTP <span style="color: red;">*</span></label>
+                                    <div class="col-sm-4">
                                         <textarea name="alamat_ktp" id="alamat_ktp" class="form-control" rows="2" placeholder="Alamat lengkap sesuai KTP"></textarea>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="control-label col-sm-3">Alamat Domisili <span style="color: red;">*</span></label>
-                                    <div class="col-sm-9">
+                                    <label class="control-label col-sm-2">Alamat Domisili <span style="color: red;">*</span></label>
+                                    <div class="col-sm-4">
                                         <textarea name="alamat_domisili" id="alamat_domisili" class="form-control" rows="2" placeholder="Alamat lengkap sesuai Domisili"></textarea>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="control-label col-sm-3">Status Pernikahan <span style="color: red;">*</span></label>
+                                    <label class="control-label col-sm-2">Status Pernikahan <span style="color: red;">*</span></label>
                                     <div class="col-sm-9">
                                         <select class="form-control select-status" name="status_pernikahan"
                                             id="status_pernikahan">
@@ -581,13 +579,13 @@
 
                             <div id="pasangan" style="display: none;">
                                 <div class="form-group row">
-                                    <label class="control-label col-sm-3">Nama Pasangan</label>
+                                    <label class="control-label col-sm-2">Nama Pasangan</label>
                                     <div class="col-sm-4">
                                         <input name="nama_p" id="nama_p" class="form-control" type="text"
                                         placeholder="Masukan Nama Pasangan">
                                     </div>
                                     <label class="control-label col-sm-2">NIK Pasangan</label>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-4">
                                         <input name="nik_p" id="nik_p" class="form-control" type="text"
                                         placeholder="Masukan NIK Pasangan">
                                     </div>
@@ -595,13 +593,13 @@
                             </div>
 
                             <div class="form-group row">
-                                <label class="control-label col-sm-3">Nama Saudara</label>
+                                <label class="control-label col-sm-2">Nama Saudara</label>
                                 <div class="col-sm-4">
                                     <input name="nama_saudara" id="nama_saudara" class="form-control" type="text"
                                     placeholder="Masukan Nama Saudara">
                                 </div>
                                 <label class="control-label col-sm-2">No. Telp Saudara</label>
-                                <div class="col-sm-3">
+                                <div class="col-sm-4">
                                     <input name="no_telp_saudara" id="no_telp_saudara" class="form-control" type="text"
                                     placeholder="Masukan No. Telp Saudara">
                                 </div>
@@ -616,7 +614,7 @@
                                 </div>
 
                                <div class="form-group row mb-3">
-                                    <label class="control-label col-sm-3">Lokasi Perumahan <span style="color: red;">*</span></label>
+                                    <label class="control-label col-sm-2">Lokasi Perumahan <span style="color: red;">*</span></label>
                                     <div class="col-sm-4">
                                         <select class="form-control select-lokasi" name="id_lokasi" id="id_lokasi">
                                             <option value=""></option>
@@ -626,13 +624,13 @@
                                         </select>
                                     </div>
                                     <label class="control-label col-sm-2">Blok/Kav <span style="color: red;">*</span></label>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-4">
                                         <select name="id_kavling" id="id_kavling" class="form-control select-kavling"></select>
                                     </div>
                                 </div>
 
                                 <div class="form-group row mb-3">
-                                    <label class="control-label col-sm-3">Harga Jual</label>
+                                    <label class="control-label col-sm-2">Harga Jual</label>
                                     <div class="col-sm-4">
                                         <div class="input-group">
                                             <div class="input-group-prepend">
@@ -652,35 +650,18 @@
                                     <h5 class="stage-title">Data Pembelian</h5>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="control-label col-sm-3">Marketing <span style="color: red;">*</span></label>
-                                    <div class="col-sm-9">
-                                        <select class="form-control select-marketing" name="id_marketing" id="id_marketing">
-                                            <option value=""></option>
-                                            <option value="0">Non Marketing</option>
-                                            @foreach ($marketing as $m)
-                                                <option value="{{ $m->id }}">{{ $m->nama_marketing }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    {{-- --}}
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="control-label col-sm-3">Jenis Perumahan <span
+                                    <label class="control-label col-sm-2">Jenis Perumahan <span
                                             style="color: red;">*</span></label>
-                                    <div class="col-sm-9">
+                                    <div class="col-sm-4">
                                         <select class="form-control select-jp" name="jenis_perumahan" id="jenis_perumahan">
                                             <option value=""></option>
                                             <option value="Subsidi">Subsidi</option>
                                             <option value="Komersil">Komersil</option>
                                         </select>
                                     </div>
-                                </div>
-
-                                <div class="form-group row">
-                                   <label class="control-label col-sm-3">Jenis Pembelian <span
+                                    <label class="control-label col-sm-2">Jenis Pembelian <span
                                             style="color: red;">*</span></label>
-                                    <div class="col-sm-9">
+                                    <div class="col-sm-4">
                                         <select class="form-control select-pembelian" name="jenis_pembelian"
                                             id="jenis_pembelian">
                                             <option value=""></option>
@@ -692,7 +673,17 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="control-label col-sm-3">Booking Fee <span style="color: red;">*</span></label>
+                                    <label class="control-label col-sm-2">Marketing <span style="color: red;">*</span></label>
+                                    <div class="col-sm-4">
+                                        <select class="form-control select-marketing" name="id_marketing" id="id_marketing">
+                                            <option value=""></option>
+                                            <option value="0">Non Marketing</option>
+                                            @foreach ($marketing as $m)
+                                                <option value="{{ $m->id }}">{{ $m->nama_marketing }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <label class="control-label col-sm-2">Booking Fee <span style="color: red;">*</span></label>
                                     <div class="col-sm-4">
                                         <div class="input-group">
                                             <div class="input-group-prepend">
@@ -702,7 +693,6 @@
                                                 type="text">
                                         </div>
                                     </div>
-                                </div>
                                 </div>
                             </div>
 
@@ -726,7 +716,7 @@
                                         </div>
                                     </div>
                                     <label class="control-label col-sm-2">Foto KTP <span style="color: red;">*</span></label>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-4">
                                         <input name="foto_ktp" id="foto_ktp" type="file" accept=".jpg,.jpeg,.png"
                                             onchange="handleFileChange(this, 'preview_foto_ktp')">
                                         <div id="preview_foto_ktp" class="mt-2 d-none">
@@ -750,7 +740,7 @@
                                         </div>
                                     </div>
                                     <label class="control-label col-sm-2">Foto KK</label>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-4">
                                         <input name="foto_kk" id="foto_kk" type="file" accept=".jpg,.jpeg,.png"
                                             onchange="handleFileChange(this, 'preview_foto_kk')">
                                         <div id="preview_foto_kk" class="mt-2 d-none">
@@ -775,7 +765,7 @@
                                         </div>
                                     </div>
                                     <label class="control-label col-sm-2">Foto KTP Pasangan</label>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-4">
                                         <input name="foto_ktp_p" id="foto_ktp_p" type="file" accept=".jpg,.jpeg,.png"
                                             onchange="handleFileChange(this, 'preview_foto_ktp_p')">
                                         <div id="preview_foto_ktp_p" class="mt-2 d-none">
