@@ -56,6 +56,31 @@
     @stack('css')
 
     <style>
+        :root {
+            --rezky-green: #00a651;
+            --rezky-green-dark: #008541;
+        }
+
+        .bg-indigo,
+        .bg-purple {
+            background-color: var(--rezky-green) !important;
+            color: #fff !important;
+        }
+
+        .btn.bg-indigo:hover,
+        .btn.bg-purple:hover,
+        .btn.bg-indigo:focus,
+        .btn.bg-purple:focus {
+            background-color: var(--rezky-green-dark) !important;
+            border-color: var(--rezky-green-dark) !important;
+        }
+
+        .nav-sidebar > .nav-item > .nav-link.active,
+        .nav-treeview > .nav-item > .nav-link.active {
+            background-color: var(--rezky-green) !important;
+            color: #fff !important;
+        }
+
         .modal-body {
             max-height: calc(100vh - 210px);
             overflow-y: auto;
@@ -99,7 +124,7 @@
         }
 
         .sidebar-fixed-bottom .nav-link:hover {
-            background-color: #6610f2;
+            background-color: var(--rezky-green);
             color: #fff;
         }
 
@@ -335,7 +360,7 @@
                                 <li class="nav-item">
                                     <a href="{{ route($menu->route_name) }}"
                                         class="nav-link {{ $isActiveSingle ? '' : '' }}"
-                                        style="{{ $isActiveSingle ? 'background-color: #6610f2 !important; color: #ffffff !important;' : '' }}">
+                                        style="{{ $isActiveSingle ? 'background-color: #00a651 !important; color: #ffffff !important;' : '' }}">
                                         <i class="nav-icon fas {{ $menu->icon }}"
                                             style="{{ $isActiveSingle ? 'color: #ffffff !important;' : '' }}"></i>
                                         <p style="{{ $isActiveSingle ? 'color: #ffffff !important;' : '' }}">
@@ -345,7 +370,7 @@
                             @else
                                 <li class="nav-item {{ $isActiveParent ? 'menu-open' : '' }}">
                                     <a href="#" class="nav-link {{ $isActiveParent ? 'active' : '' }}"
-                                        style="{{ $isActiveParent ? 'background-color: #6610f2 !important; color: #ffffff !important;' : '' }}">
+                                        style="{{ $isActiveParent ? 'background-color: #00a651 !important; color: #ffffff !important;' : '' }}">
                                         <i class="nav-icon fas {{ $menu->icon }}"
                                             style="{{ $isActiveParent ? 'color: #ffffff !important;' : '' }}"></i>
                                         <p style="{{ $isActiveParent ? 'color: #ffffff !important;' : '' }}">

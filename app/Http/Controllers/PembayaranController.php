@@ -23,7 +23,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use setasign\Fpdi\Tcpdf\Fpdi;
+use setasign\Fpdi\Fpdi;
 use TCPDF;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -549,6 +549,69 @@ class PembayaranController extends Controller
 
 
     public function cetak($id)
+    {
+        $pembayaran = Pemasukan::with(['customer', 'metode', 'kategori'])
+            ->where('id', $id)
+            ->where('keterangan', 'NOT LIKE', 'Biaya ganti nama%')
+            ->firstOrFail();
+
+        $templatePath = public_path('templates/kwitansi-rezky-property.pdf');
+        abort_unless(file_exists($templatePath), 500, 'Template kwitansi tidak ditemukan.');
+
+        $pdf = new Fpdi('P', 'mm', 'A4');
+        $pdf->SetTitle('Kwitansi - ' . ($pembayaran->no_kwitansi ?: 'draft'));
+        $pdf->SetAuthor('Rezky Property');
+        $pdf->SetMargins(0, 0, 0);
+        $pdf->SetAutoPageBreak(false);
+
+        $pdf->setSourceFile($templatePath);
+        $templateId = $pdf->importPage(1);
+        $templateSize = $pdf->getTemplateSize($templateId);
+        $pdf->AddPage($templateSize['orientation'], [$templateSize['width'], $templateSize['height']]);
+        $pdf->useTemplate($templateId, 0, 0, $templateSize['width'], $templateSize['height']);
+
+        $fpdfText = static function (?string $value): string {
+            return iconv('UTF-8', 'windows-1252//TRANSLIT//IGNORE', $value ?? '') ?: '';
+        };
+
+        $write = static function (Fpdi $pdf, float $x, float $y, float $width, string $text, float $fontSize = 10, string $align = 'L') use ($fpdfText): void {
+            $pdf->SetFont('Arial', '', $fontSize);
+            $pdf->SetXY($x, $y);
+            $pdf->Cell($width, 5, $fpdfText($text), 0, 0, $align);
+        };
+
+        $nama = strtoupper($pembayaran->customer->nama_lengkap ?? '-');
+        $terbilang = '# ' . strtoupper($this->terbilang((int) $pembayaran->nominal)) . ' RUPIAH #';
+        $nominal = 'Rp. ' . number_format($pembayaran->nominal, 0, ',', '.') . ',-';
+        $metode = Str::lower($pembayaran->metode->jenis_bayar ?? 'tunai');
+
+        $write($pdf, 168.5, 12.2, 35, $pembayaran->no_kwitansi ?: '-', 9, 'C');
+        $write($pdf, 168.5, 20.5, 35, $pembayaran->cicilan_ke ?: '-', 9, 'C');
+        $write($pdf, 78.5, 34.8, 112, $nama, 10);
+        $write($pdf, 78.5, 42.8, 112, $terbilang, 9);
+
+        $pdf->SetFont('Arial', '', 9);
+        $pdf->SetXY(78.5, 50.5);
+        $pdf->MultiCell(112, 5.7, $fpdfText($pembayaran->keterangan ?: '-'), 0, 'L');
+
+        $write($pdf, 43, 68.5, 58, $nominal, 11);
+
+        $pdf->SetFont('Arial', 'B', 12);
+        if (Str::contains($metode, ['transfer', 'bank'])) {
+            $write($pdf, 43.2, 76.1, 9, 'X', 11, 'C');
+        } else {
+            $write($pdf, 43.2, 83.0, 9, 'X', 11, 'C');
+        }
+
+        $filename = 'Kwitansi-' . ($pembayaran->no_kwitansi ?: 'draft') . '.pdf';
+
+        return response($pdf->Output('S', $filename), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $filename . '"',
+        ]);
+    }
+
+    private function cetakLama($id)
     {
         $pembayaran = Pemasukan::with(['customer', 'metode'])
             ->where('id', $id)
@@ -1131,6 +1194,9 @@ class PembayaranController extends Controller
 
     public function tambahPemasukan(Request $request, $id)
     {
+        $kategori = KategoriTransaksi::find($request->id_kategori_transaksi);
+        $isCicilan = $kategori && Str::contains(Str::lower($kategori->kategori), 'cicilan');
+
         $rules = [
             'tanggal_pembayaran'    => 'required|date',
             'id_kategori_transaksi' => 'required',
@@ -1139,6 +1205,7 @@ class PembayaranController extends Controller
             'id_tagihan'            => 'required_if:id_kategori_transaksi,17',
             'nominal_bayar'         => 'required',
             'keterangan_pembayaran' => 'required',
+            'cicilan_ke'             => $isCicilan ? 'required|string|max:50' : 'nullable|string|max:50',
             'file'                  => 'required_if:id_metode_bayar,2|file|mimes:jpeg,png,jpg,webp,pdf|max:2048',
         ];
 
@@ -1150,6 +1217,7 @@ class PembayaranController extends Controller
             'id_tagihan.required_if'         => 'Tagihan wajib dipilih.',
             'nominal_bayar.required'         => 'Nominal wajib diisi.',
             'keterangan_pembayaran.required' => 'Keterangan wajib diisi.',
+            'cicilan_ke.required'             => 'Cicilan ke wajib diisi untuk kategori cicilan.',
             'file.required_if'               => 'Lampiran wajib diunggah.',
         ];
 
@@ -1186,6 +1254,7 @@ class PembayaranController extends Controller
                 'nominal'               => str_replace('.', '', $request->nominal_bayar),
                 'keterangan'            => $request->keterangan_pembayaran,
                 'keterangan_kategori'   => $request->keterangan_kategori ?? '',
+                'cicilan_ke'             => $isCicilan ? $request->cicilan_ke : null,
                 'id_metode_bayar'       => $request->id_metode_bayar,
                 'lampiran'              => $filename ?? '',
             ]);
@@ -1448,6 +1517,9 @@ class PembayaranController extends Controller
 
     public function updatePemasukan(Request $request, $id)
     {
+        $kategori = KategoriTransaksi::find($request->id_kategori_transaksi);
+        $isCicilan = $kategori && Str::contains(Str::lower($kategori->kategori), 'cicilan');
+
         $request->validate([
             'tanggal_pembayaran'    => 'required|date',
             'id_kategori_transaksi' => 'required',
@@ -1455,6 +1527,7 @@ class PembayaranController extends Controller
             'id_metode_bayar'       => 'required',
             'nominal_bayar'         => 'required',
             'keterangan_pembayaran' => 'required',
+            'cicilan_ke'             => $isCicilan ? 'required|string|max:50' : 'nullable|string|max:50',
         ]);
 
         DB::beginTransaction();
@@ -1478,6 +1551,7 @@ class PembayaranController extends Controller
                 'nominal'               => str_replace('.', '', $request->nominal_bayar),
                 'keterangan'            => $request->keterangan_pembayaran,
                 'keterangan_kategori'   => $request->keterangan_kategori ?? '',
+                'cicilan_ke'             => $isCicilan ? $request->cicilan_ke : null,
                 'id_metode_bayar'       => $request->id_metode_bayar,
                 'lampiran'              => $filename ?? $pemasukan->lampiran,
             ];

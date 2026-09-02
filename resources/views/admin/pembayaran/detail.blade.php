@@ -434,7 +434,7 @@
                                     class="form-control select-kategori-transaksi">
                                     <option value=""></option>
                                     @foreach ($kategoriTransaksiPemasukan as $data)
-                                        <option value="{{ $data->id }}">{{ $data->kategori }}</option>
+                                        <option value="{{ $data->id }}" data-kategori="{{ strtolower($data->kategori) }}">{{ $data->kategori }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -448,6 +448,14 @@
                                         </option>
                                     @endforeach
                                 </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row d-none" id="cicilan_ke_group">
+                            <label class="col-sm-3 col-form-label" for="cicilan_ke">Cicilan Ke</label>
+                            <div class="col-sm-4">
+                                <input name="cicilan_ke" id="cicilan_ke" class="form-control" type="text"
+                                    placeholder="Ketik cicilan ke">
                             </div>
                         </div>
 
@@ -582,9 +590,17 @@
                                 <select name="id_kategori_transaksi" id="edit_id_kategori_transaksi" class="form-control select2-edit-pemasukan">
                                     <option value=""></option>
                                     @foreach ($kategoriTransaksiPemasukan as $data)
-                                        <option value="{{ $data->id }}">{{ $data->kategori }}</option>
+                                        <option value="{{ $data->id }}" data-kategori="{{ strtolower($data->kategori) }}">{{ $data->kategori }}</option>
                                     @endforeach
                                 </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row d-none" id="edit_cicilan_ke_group">
+                            <label class="col-sm-3 col-form-label" for="edit_cicilan_ke">Cicilan Ke</label>
+                            <div class="col-sm-4">
+                                <input name="cicilan_ke" id="edit_cicilan_ke" class="form-control" type="text"
+                                    placeholder="Ketik cicilan ke">
                             </div>
                         </div>
 
@@ -706,6 +722,15 @@
         $(document).ready(function() {
             $('#id_kategori_transaksi').on('change', function() {
                 let val = $(this).val();
+                let kategori = ($(this).find(':selected').data('kategori') || '').toString();
+                let isCicilan = kategori.includes('cicilan');
+
+                $('#cicilan_ke_group').toggleClass('d-none', !isCicilan);
+                $('#cicilan_ke').prop('required', isCicilan);
+                if (!isCicilan) {
+                    $('#cicilan_ke').val('');
+                }
+
                 if (val == 17) {
                     $('.label-tagihan').removeClass('d-none');
                     $('.div-tagihan').removeClass('d-none');
@@ -1278,6 +1303,8 @@
 
             $('.label-tagihan').addClass('d-none');
             $('.div-tagihan').addClass('d-none');
+            $('#cicilan_ke_group').addClass('d-none');
+            $('#cicilan_ke').prop('required', false).val('');
 
             $('#previewLampiran').html(`<span style="color: #6c757d;">Tidak ada berkas</span>`);
         });
@@ -1577,6 +1604,7 @@
                     $('#edit_no_kwitansi').val(data.no_kwitansi);
                     $('#edit_id_kategori_transaksi').val(data.id_kategori_transaksi).trigger('change');
                     $('#edit_keterangan_kategori').val(data.keterangan_kategori);
+                    $('#edit_cicilan_ke').val(data.cicilan_ke);
                     $('#edit_id_bank').val(data.id_bank).trigger('change');
                     $('#edit_id_metode_bayar').val(data.id_metode_bayar).trigger('change');
                     $('#edit_nominal_bayar').val(formatNumber(data.nominal));
@@ -1599,6 +1627,17 @@
             });
         });
 
+        $('#edit_id_kategori_transaksi').on('change', function() {
+            let kategori = ($(this).find(':selected').data('kategori') || '').toString();
+            let isCicilan = kategori.includes('cicilan');
+
+            $('#edit_cicilan_ke_group').toggleClass('d-none', !isCicilan);
+            $('#edit_cicilan_ke').prop('required', isCicilan);
+            if (!isCicilan) {
+                $('#edit_cicilan_ke').val('');
+            }
+        });
+
         $('#modalEditPemasukan').on('hidden.bs.modal', function() {
             $('#formEditPemasukan')[0].reset();
             $('.select2-edit-pemasukan').val('').trigger('change');
@@ -1607,6 +1646,8 @@
             $('.is-invalid').removeClass('is-invalid');
             $('.invalid-feedback').remove();
             $('#editPreviewLampiran').html('<span style="color: #6c757d;">Tidak ada berkas</span>');
+            $('#edit_cicilan_ke_group').addClass('d-none');
+            $('#edit_cicilan_ke').prop('required', false).val('');
 
             let submitBtn = $('#submitBtnEditPemasukan');
             submitBtn.find('.spinner-border').addClass('d-none');

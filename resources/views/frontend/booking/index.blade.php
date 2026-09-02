@@ -5,6 +5,11 @@
 @push('styles')
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+       .bg-indigo {
+            background-color: #00a651 !important;
+            color: #fff !important;
+        }
+
        body {
             font-family: 'Inter', sans-serif !important;
             background: url('{{ $bg ? asset("config_media/" . $bg->nama_file) : "" }}') no-repeat center center fixed !important;

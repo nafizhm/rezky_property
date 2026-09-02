@@ -312,11 +312,11 @@
             position: relative;
         }
         .dropzone-wrapper:hover {
-            border-color: #6610f2;
+            border-color: #00a651;
             background-color: #f3f0ff;
         }
         .dropzone-wrapper.dragover {
-            border-color: #6610f2;
+            border-color: #00a651;
             background-color: #f3f0ff;
         }
         .dropzone-content {

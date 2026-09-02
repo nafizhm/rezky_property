@@ -39,7 +39,7 @@
         style="
             height: 50vh;
             background-image:
-            linear-gradient(rgba(0, 45, 90, 0.50), rgb(103, 17, 242)),
+            linear-gradient(rgba(0, 45, 90, 0.50), rgb(0, 166, 81)),
             url('/assets/img/thumnail-marketing.webp');
             padding-left: 3rem;
             color: white;
@@ -83,7 +83,7 @@
                         <div class="text-start">
                             <a href="{{ route('konten.siteplan', $item->id) }}"
                             class="btn"
-                            style="background-color: #6610f2; color: #fff; border-radius: 6px; padding: 6px 20px;">
+                            style="background-color: #00a651; color: #fff; border-radius: 6px; padding: 6px 20px;">
                                 Detail
                             </a>
 

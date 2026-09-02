@@ -39,7 +39,7 @@
         style="
             height: 50vh;
             background-image:
-            linear-gradient(rgba(0, 45, 90, 0.50), rgb(103, 17, 242)),
+            linear-gradient(rgba(0, 45, 90, 0.50), rgb(0, 166, 81)),
             url('/assets/img/thumnail-marketing.webp');
             padding-left: 3rem;
             color: white;
