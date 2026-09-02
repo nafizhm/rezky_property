@@ -20,6 +20,10 @@
                                             <a href="{{ route('customer.tempo') }}" class="btn btn-sm btn-primary mr-2">
                                                 <i class="fas fa-clock mr-1"></i> Customer Tempo
                                             </a>
+                                            <button type="button" class="btn btn-sm btn-danger mr-2" data-toggle="modal"
+                                                data-target="#modalUnitSudahLaku">
+                                                <i class="fas fa-plus mr-1"></i> Unit Sudah Laku
+                                            </button>
                                         @endif
                                         <button type="button" class="btn btn-sm btn-dark" data-toggle="modal"
                                             data-target="#modalFilterCetak">
@@ -370,6 +374,305 @@
                         </div>
                     </form>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Unit Sudah Laku -->
+    <div class="modal fade" id="modalUnitSudahLaku" tabindex="-1" role="dialog" data-focus="false"
+        aria-labelledby="modalUnitSudahLakuLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title text-white font-weight-bold" id="modalUnitSudahLakuLabel">
+                        <i class="fas fa-plus-circle mr-1"></i> Form Unit Sudah Laku
+                    </h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="formDataUnitSudahLaku" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <!-- Data Pribadi -->
+                        <h6 class="text-danger font-weight-bold mb-3"><i class="fas fa-user mr-1"></i> Data Pribadi</h6>
+
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3">Nama Lengkap <span style="color: red;">*</span></label>
+                            <div class="col-sm-4">
+                                <input name="nama_lengkap" id="usl_nama_lengkap" class="form-control" type="text"
+                                    placeholder="Masukkan nama lengkap sesuai KTP">
+                            </div>
+                            <label class="control-label col-sm-2">NIK <span style="color: red;">*</span></label>
+                            <div class="col-sm-3">
+                                <input name="nik" id="usl_nik" class="form-control" type="text"
+                                    placeholder="Masukkan NIK">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3">Tempat Lahir <span style="color: red;">*</span></label>
+                            <div class="col-sm-4">
+                                <input name="tempat_lahir" id="usl_tempat_lahir" class="form-control" type="text"
+                                    placeholder="Masukkan tempat lahir">
+                            </div>
+                            <label class="control-label col-sm-2">Tanggal Lahir <span style="color: red;">*</span></label>
+                            <div class="col-sm-3">
+                                <input name="tgl_lahir" id="usl_tgl_lahir" class="form-control" type="date">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3">No. Telp / WA <span style="color: red;">*</span></label>
+                            <div class="col-sm-4">
+                                <input name="no_telp" id="usl_no_telp" class="form-control" type="text"
+                                    placeholder="Contoh: 08123*****">
+                            </div>
+                            <label class="control-label col-sm-2">Jenis Kelamin <span style="color: red;">*</span></label>
+                            <div class="col-sm-3">
+                                <select class="form-control select-jk-usl" name="jenis_kelamin" id="usl_jenis_kelamin">
+                                    <option value=""></option>
+                                    <option value="Laki-laki">Laki-laki</option>
+                                    <option value="Perempuan">Perempuan</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3">Email</label>
+                            <div class="col-sm-4">
+                                <input name="email" id="usl_email" class="form-control" type="text"
+                                    placeholder="Contoh: xyz@gmail.com">
+                            </div>
+                            <label class="control-label col-sm-2">NPWP</label>
+                            <div class="col-sm-3">
+                                <input name="npwp" id="usl_npwp" class="form-control" type="text"
+                                    placeholder="Masukan npwp">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3">Pekerjaan</label>
+                            <div class="col-sm-4">
+                                <select class="form-control select-pekerjaan-usl" name="pekerjaan" id="usl_pekerjaan">
+                                    <option value=""></option>
+                                    <option value="Wiraswasta">Wiraswasta</option>
+                                    <option value="Pegawai Swasta">Pegawai Swasta</option>
+                                    <option value="ASN">ASN</option>
+                                    <option value="TNI atau Polri">TNI atau Polri</option>
+                                    <option value="Karyawan BUMN">Karyawan BUMN</option>
+                                    <option value="Karyawan">Karyawan</option>
+                                    <option value="Buruh">Buruh</option>
+                                    <option value="Petani">Petani</option>
+                                    <option value="Pedagang">Pedagang</option>
+                                    <option value="Sopir">Sopir</option>
+                                    <option value="Guru/Dosen">Guru/Dosen</option>
+                                    <option value="Dokter">Dokter</option>
+                                    <option value="Ibu Rumah Tangga">Ibu Rumah Tangga</option>
+                                    <option value="Pensiunan">Pensiunan</option>
+                                    <option value="Pelajar/Mahasiswa">Pelajar/Mahasiswa</option>
+                                    <option value="Freelancer">Freelancer</option>
+                                    <option value="Lain-lain">Lain-lain</option>
+                                </select>
+                            </div>
+                            <label class="control-label col-sm-2">No. BPJS Kes</label>
+                            <div class="col-sm-3">
+                                <input name="no_bpjs_kes" id="usl_no_bpjs_kes" class="form-control" type="text"
+                                    placeholder="Masukan BPJS Kes">
+                            </div>
+                        </div>
+
+                        <div class="form-group row" id="usl_row-pekerjaan-lain" style="display: none;">
+                            <label class="control-label col-sm-3">Pekerjaan Lainnya</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" name="pekerjaan_lain" id="usl_pekerjaan_lain"
+                                    placeholder="Masukkan pekerjaan">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3">Alamat KTP <span style="color: red;">*</span></label>
+                            <div class="col-sm-6">
+                                <textarea name="alamat_ktp" id="usl_alamat_ktp" class="form-control" rows="2"
+                                    placeholder="Alamat lengkap sesuai KTP"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3">Alamat Domisili <span style="color: red;">*</span></label>
+                            <div class="col-sm-6">
+                                <textarea name="alamat_domisili" id="usl_alamat_domisili" class="form-control" rows="2"
+                                    placeholder="Alamat lengkap sesuai Domisili"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3">Status Pernikahan <span style="color: red;">*</span></label>
+                            <div class="col-sm-4">
+                                <select class="form-control select-status-usl" name="status_pernikahan"
+                                    id="usl_status_pernikahan">
+                                    <option value=""></option>
+                                    <option value="Belum Menikah">Belum Menikah</option>
+                                    <option value="Menikah">Menikah</option>
+                                    <option value="Cerai Hidup">Cerai Hidup</option>
+                                    <option value="Cerai Mati">Cerai Mati</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="usl_pasangan" style="display: none;">
+                            <div class="form-group row">
+                                <label class="control-label col-sm-3">Nama Pasangan</label>
+                                <div class="col-sm-4">
+                                    <input name="nama_p" id="usl_nama_p" class="form-control" type="text"
+                                        placeholder="Masukan Nama Pasangan">
+                                </div>
+                                <label class="control-label col-sm-2">NIK Pasangan</label>
+                                <div class="col-sm-3">
+                                    <input name="nik_p" id="usl_nik_p" class="form-control" type="text"
+                                        placeholder="Masukan NIK Pasangan">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3">Nama Saudara</label>
+                            <div class="col-sm-4">
+                                <input name="nama_saudara" id="usl_nama_saudara" class="form-control" type="text"
+                                    placeholder="Masukan Nama Saudara">
+                            </div>
+                            <label class="control-label col-sm-2">No. Telp Saudara</label>
+                            <div class="col-sm-3">
+                                <input name="no_telp_saudara" id="usl_no_telp_saudara" class="form-control" type="text"
+                                    placeholder="Masukan No. Telp Saudara">
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- Data Kavling -->
+                        <h6 class="text-danger font-weight-bold mb-3"><i class="fas fa-home mr-1"></i> Data Kavling</h6>
+
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3">Lokasi Perumahan <span style="color: red;">*</span></label>
+                            <div class="col-sm-4">
+                                <select class="form-control select-lokasi-usl" name="id_lokasi" id="usl_id_lokasi">
+                                    <option value=""></option>
+                                    @foreach ($lokasi as $l)
+                                        <option value="{{ $l->id }}">{{ $l->nama_kavling }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <label class="control-label col-sm-2">Blok/Kav <span style="color: red;">*</span></label>
+                            <div class="col-sm-3">
+                                <select name="id_kavling" id="usl_id_kavling"
+                                    class="form-control select-kavling-usl"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3">Harga Jual</label>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Rp.</span>
+                                    </div>
+                                    <input type="text" name="total_harga" id="usl_total_harga"
+                                        class="form-control" readonly disabled placeholder="Pilih kavling terlebih dahulu">
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- Data Pembelian -->
+                        <h6 class="text-danger font-weight-bold mb-3"><i class="fas fa-shopping-cart mr-1"></i> Data Pembelian</h6>
+
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3">Marketing <span style="color: red;">*</span></label>
+                            <div class="col-sm-4">
+                                <select class="form-control select-marketing-usl" name="id_marketing" id="usl_id_marketing">
+                                    <option value=""></option>
+                                    <option value="0">Non Marketing</option>
+                                    @foreach ($marketing as $m)
+                                        <option value="{{ $m->id }}">{{ $m->nama_marketing }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3">Jenis Perumahan <span style="color: red;">*</span></label>
+                            <div class="col-sm-4">
+                                <select class="form-control select-jp-usl" name="jenis_perumahan" id="usl_jenis_perumahan">
+                                    <option value=""></option>
+                                    <option value="Subsidi">Subsidi</option>
+                                    <option value="Komersil">Komersil</option>
+                                </select>
+                            </div>
+                            <label class="control-label col-sm-2">Jenis Pembelian <span style="color: red;">*</span></label>
+                            <div class="col-sm-3">
+                                <select class="form-control select-pembelian-usl" name="jenis_pembelian"
+                                    id="usl_jenis_pembelian">
+                                    <option value=""></option>
+                                    <option value="Pembelian Cash">Pembelian Cash</option>
+                                    <option value="Cash Bertahap">Cash Bertahap</option>
+                                    <option value="KPR">KPR</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- File Upload -->
+                        <h6 class="text-danger font-weight-bold mb-3"><i class="fas fa-upload mr-1"></i> File Upload</h6>
+
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3">Foto Pemohon</label>
+                            <div class="col-sm-3">
+                                <input name="foto_pemohon" id="usl_foto_pemohon" type="file" accept=".jpg,.jpeg,.png">
+                            </div>
+                            <label class="control-label col-sm-3">Foto KTP <span style="color: red;">*</span></label>
+                            <div class="col-sm-3">
+                                <input name="foto_ktp" id="usl_foto_ktp" type="file" accept=".jpg,.jpeg,.png">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3">Foto NPWP</label>
+                            <div class="col-sm-3">
+                                <input name="foto_npwp" id="usl_foto_npwp" type="file" accept=".jpg,.jpeg,.png">
+                            </div>
+                            <label class="control-label col-sm-3">Foto KK</label>
+                            <div class="col-sm-3">
+                                <input name="foto_kk" id="usl_foto_kk" type="file" accept=".jpg,.jpeg,.png">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3">Foto BPJS</label>
+                            <div class="col-sm-3">
+                                <input name="foto_bpjs" id="usl_foto_bpjs" type="file" accept=".jpg,.jpeg,.png">
+                            </div>
+                            <label class="control-label col-sm-3">Foto KTP Pasangan</label>
+                            <div class="col-sm-3">
+                                <input name="foto_ktp_p" id="usl_foto_ktp_p" type="file" accept=".jpg,.jpeg,.png">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-3">Bukti SPPR</label>
+                            <div class="col-sm-3">
+                                <input name="file_sppr" id="usl_file_sppr" type="file">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary" id="submitBtnUnitSudahLaku">
+                            <span class="spinner-border spinner-border-sm mx-1 d-none" role="status"
+                                aria-hidden="true"></span>
+                            <span class="button-text">Simpan</span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -783,6 +1086,200 @@
                         return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 }]
+            });
+        });
+
+        // === MODAL UNIT SUDAH LAKU ===
+        $(document).ready(function() {
+            $('.select-lokasi-usl').select2({
+                theme: "bootstrap4",
+                minimumResultsForSearch: Infinity,
+                placeholder: "Pilih Lokasi",
+            });
+            $('.select-kavling-usl').select2({
+                theme: "bootstrap4",
+                placeholder: "Pilih Kavling",
+            });
+            $('.select-jk-usl').select2({
+                theme: "bootstrap4",
+                minimumResultsForSearch: Infinity,
+                placeholder: "Pilih Jenis Kelamin",
+            });
+            $('.select-marketing-usl').select2({
+                theme: "bootstrap4",
+                placeholder: "Pilih Marketing",
+            });
+            $('.select-jp-usl').select2({
+                theme: "bootstrap4",
+                minimumResultsForSearch: Infinity,
+                placeholder: "Pilih Jenis Perumahan",
+            });
+            $('.select-pembelian-usl').select2({
+                theme: "bootstrap4",
+                minimumResultsForSearch: Infinity,
+                placeholder: "Pilih Jenis Pembelian",
+            });
+            $('.select-status-usl').select2({
+                theme: "bootstrap4",
+                minimumResultsForSearch: Infinity,
+                placeholder: "Pilih Status",
+            });
+            $('.select-pekerjaan-usl').select2({
+                theme: "bootstrap4",
+                placeholder: "Pilih Pekerjaan",
+            });
+        });
+
+        const routeGetKavlingUSL = "{{ route('customer.getKavling', ':id') }}";
+        const routeGetHargaUSL = "{{ route('customer.getHargaKavling', ':id') }}";
+
+        $(document).on('change', '#usl_id_lokasi', function() {
+            let idLokasi = $(this).val();
+            $('#usl_id_kavling').html('<option value="">Loading...</option>').trigger('change');
+            $('#usl_total_harga').val('').attr('placeholder', 'Pilih kavling terlebih dahulu');
+
+            if (idLokasi) {
+                const urlKavling = routeGetKavlingUSL.replace(':id', idLokasi);
+                $.get(urlKavling, function(data) {
+                    let options = '<option value=""></option>';
+                    data.forEach(function(item) {
+                        options += `<option value="${item.id}">${item.kode_kavling}</option>`;
+                    });
+                    $('#usl_id_kavling').html(options).trigger('change');
+                });
+            }
+        });
+
+        $(document).on('change', '#usl_id_kavling', function() {
+            let idKavling = $(this).val();
+            if (idKavling) {
+                const urlHarga = routeGetHargaUSL.replace(':id', idKavling);
+                $.get(urlHarga, function(data) {
+                    let hargaJual = 0;
+                    if (data.rincian_biaya && data.rincian_biaya.length) {
+                        let hr = data.rincian_biaya.find(function(item) {
+                            return item.nama === 'Harga Rumah';
+                        });
+                        hargaJual = hr ? hr.nilai : data.total_harga;
+                    }
+                    $('#usl_total_harga').val(hargaJual ? hargaJual.toLocaleString('id-ID') : '').attr('placeholder', '0');
+                });
+            } else {
+                $('#usl_total_harga').val('').attr('placeholder', 'Pilih kavling terlebih dahulu');
+            }
+        });
+
+        $(document).on('change', '#usl_status_pernikahan', function() {
+            if ($(this).val() === 'Menikah') {
+                $('#usl_pasangan').fadeIn();
+            } else {
+                $('#usl_pasangan').fadeOut();
+                $('#usl_nama_p, #usl_nik_p').val('');
+            }
+        });
+
+        $(document).on('change', '#usl_pekerjaan', function() {
+            setTimeout(function() {
+                if ($('#usl_pekerjaan').val() === 'Lain-lain') {
+                    $('#usl_row-pekerjaan-lain').fadeIn();
+                } else {
+                    $('#usl_row-pekerjaan-lain').fadeOut();
+                    $('#usl_pekerjaan_lain').val('');
+                }
+            }, 50);
+        });
+
+        $('#modalUnitSudahLaku').on('hidden.bs.modal', function() {
+            $('#formDataUnitSudahLaku')[0].reset();
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').remove();
+            $('#usl_jenis_kelamin').val('').trigger('change');
+            $('#usl_status_pernikahan').val('').trigger('change');
+            $('#usl_id_lokasi').val('').trigger('change');
+            $('#usl_id_kavling').html('').trigger('change');
+            $('#usl_id_marketing').val('').trigger('change');
+            $('#usl_jenis_pembelian').val('').trigger('change');
+            $('#usl_jenis_perumahan').val('').trigger('change');
+            $('#usl_pekerjaan').val('').trigger('change');
+            $('#usl_pasangan').hide();
+            $('#usl_row-pekerjaan-lain').hide();
+            $('#usl_total_harga').val('').attr('placeholder', 'Pilih kavling terlebih dahulu');
+
+            let submitBtn = $('#submitBtnUnitSudahLaku');
+            submitBtn.find('.spinner-border').addClass('d-none');
+            submitBtn.find('.button-text').text('Simpan');
+            submitBtn.prop('disabled', false);
+        });
+
+        $('#formDataUnitSudahLaku').on('submit', function(e) {
+            e.preventDefault();
+
+            let submitBtn = $('#submitBtnUnitSudahLaku');
+            let spinner = submitBtn.find('.spinner-border');
+            let btnText = submitBtn.find('.button-text');
+
+            spinner.removeClass('d-none');
+            btnText.text('Menyimpan...');
+            submitBtn.prop('disabled', true);
+
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').remove();
+
+            let formData = new FormData(this);
+
+            $.ajax({
+                url: '{{ route('customer.unit-sudah-laku-store') }}',
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    $('#modalUnitSudahLaku').modal('hide');
+                    audio.play();
+                    toastr.success("Data Unit Sudah Laku berhasil ditambahkan!", "BERHASIL", {
+                        progressBar: true,
+                        timeOut: 3500,
+                        positionClass: "toast-bottom-right",
+                    });
+                    $('.data-table').DataTable().ajax.reload();
+                },
+                error: function(xhr) {
+                    if (xhr.status === 422) {
+                        audio.play();
+                        toastr.error("Ada inputan yang salah!", "GAGAL!", {
+                            progressBar: true,
+                            timeOut: 3500,
+                            positionClass: "toast-bottom-right",
+                        });
+
+                        let errors = xhr.responseJSON.errors;
+                        $.each(errors, function(key, val) {
+                            let input = $('#usl_' + key);
+                            if (input.length) {
+                                input.addClass('is-invalid');
+                                input.parent().find('.invalid-feedback').remove();
+                                input.parent().append(
+                                    '<span class="invalid-feedback" role="alert"><strong>' +
+                                    val[0] + '</strong></span>'
+                                );
+                            }
+                        });
+
+                        spinner.addClass('d-none');
+                        btnText.text('Simpan');
+                        submitBtn.prop('disabled', false);
+                    } else {
+                        audio.play();
+                        toastr.error("Terjadi kesalahan server!", "GAGAL!", {
+                            progressBar: true,
+                            timeOut: 3500,
+                            positionClass: "toast-bottom-right",
+                        });
+                        spinner.addClass('d-none');
+                        btnText.text('Simpan');
+                        submitBtn.prop('disabled', false);
+                    }
+                }
             });
         });
 

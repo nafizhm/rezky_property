@@ -247,6 +247,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('admin/customer')->group(function () {
         Route::get('get-kavling/{idLokasi}', [CustomerController::class, 'getKavling'])->name('customer.getKavling');
         Route::get('get-harga-kavling/{id_kavling}', [CustomerController::class, 'getHargaKavling'])->name('customer.getHargaKavling');
+        Route::post('unit-sudah-laku', [CustomerController::class, 'unitSudahLakuStore'])->name('customer.unit-sudah-laku-store');
         Route::get('customer/cetak', [CustomerController::class, 'cetakData'])->name('customer.cetak');
         Route::get('customer/{id_customer}/subsidi-cetak', [CustomerController::class, 'cetakFormSubsidi'])->name('subsidi.cetak');
         Route::get('customer/print-document/{template_code}/{id_customer}', [CustomerController::class, 'printDocument'])->name('customer.print-document');

@@ -12,12 +12,14 @@ use App\Models\LokasiKavling;
 use App\Models\MarketingOffline;
 use App\Models\PersyaratanLegal;
 use App\Models\ProgresListPenjualan;
+use App\Models\UploudFile;
 use App\Traits\LogAktivitasTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use App\Models\DocumentTemplate;
 use App\Services\DocumentDataContext;
 use App\Services\DocumentGenerator;
@@ -146,6 +148,188 @@ class CustomerController extends Controller
             ->get();
 
         return response()->json($data);
+    }
+
+    public function getHargaKavling($idKavling)
+    {
+        $kavling = KavlingPeta::findOrFail($idKavling);
+
+        return response()->json([
+            'rincian_biaya' => $kavling->rincian_biaya ?? [],
+            'total_harga'   => collect($kavling->rincian_biaya ?? [])->sum('nilai'),
+        ]);
+    }
+
+    public function unitSudahLakuStore(Request $request)
+    {
+        $rules = [
+            'nama_lengkap'       => 'required',
+            'nik'                => 'required|digits:16',
+            'tempat_lahir'       => 'required',
+            'tgl_lahir'          => 'required|date',
+            'no_telp'            => 'required',
+            'jenis_kelamin'      => 'required',
+            'alamat_ktp'         => 'required',
+            'alamat_domisili'    => 'required',
+            'status_pernikahan'  => 'required',
+            'id_lokasi'          => 'required',
+            'id_kavling'         => 'required',
+            'id_marketing'       => 'required',
+            'jenis_perumahan'    => 'required',
+            'jenis_pembelian'    => 'required',
+            'foto_ktp'           => 'required|mimes:jpg,jpeg,png|max:2048',
+        ];
+
+        $messages = [
+            'nama_lengkap.required'      => 'Nama lengkap wajib diisi!',
+            'nik.required'               => 'NIK wajib diisi!',
+            'nik.digits'                 => 'NIK harus 16 digit!',
+            'tempat_lahir.required'      => 'Tempat lahir wajib diisi!',
+            'tgl_lahir.required'         => 'Tanggal lahir wajib diisi!',
+            'tgl_lahir.date'             => 'Format tanggal lahir tidak valid!',
+            'no_telp.required'           => 'No. Telp / WA wajib diisi!',
+            'jenis_kelamin.required'     => 'Jenis kelamin wajib diisi!',
+            'alamat_ktp.required'        => 'Alamat KTP wajib diisi!',
+            'alamat_domisili.required'   => 'Alamat domisili wajib diisi!',
+            'status_pernikahan.required' => 'Status pernikahan wajib dipilih!',
+            'id_lokasi.required'         => 'Lokasi perumahan wajib dipilih!',
+            'id_kavling.required'        => 'Kavling wajib dipilih!',
+            'id_marketing.required'      => 'Marketing wajib dipilih!',
+            'jenis_perumahan.required'   => 'Jenis perumahan wajib dipilih!',
+            'jenis_pembelian.required'   => 'Jenis pembelian wajib dipilih!',
+            'foto_ktp.required'          => 'Foto KTP wajib diupload!',
+            'foto_ktp.mimes'             => 'Format foto KTP harus jpg, jpeg, atau png!',
+            'foto_ktp.max'               => 'Ukuran foto KTP maksimal 2MB!',
+        ];
+
+        $request->merge([
+            'total_harga' => str_replace('.', '', $request->total_harga ?? 0),
+        ]);
+
+        $request->validate($rules, $messages);
+
+        $kavling = KavlingPeta::find($request->id_kavling);
+        if (! $kavling) {
+            return response()->json(['errors' => ['id_kavling' => ['Kavling tidak ditemukan!']]], 422);
+        }
+
+        DB::beginTransaction();
+        try {
+            $lokasi = LokasiKavling::findOrFail($request->id_lokasi);
+            $prefix = $lokasi->nama_singkat;
+
+            $latest = Customer::where('kode_customer', 'LIKE', $prefix . '-%')
+                ->latest('kode_customer')
+                ->first();
+
+            if ($latest && preg_match('/' . preg_quote($prefix, '/') . '-(\d+)/', $latest->kode_customer, $match)) {
+                $number  = (int) $match[1] + 1;
+                $newKode = $prefix . '-' . str_pad($number, 4, '0', STR_PAD_LEFT);
+            } else {
+                $newKode = $prefix . '-0001';
+            }
+
+            $folder = public_path('assets/customer');
+            if (! is_dir($folder)) {
+                mkdir($folder, 0755, true);
+            }
+
+            $fileFields = [
+                'foto_pemohon', 'foto_ktp', 'foto_npwp', 'foto_kk',
+                'foto_bpjs', 'foto_ktp_p', 'file_sppr',
+            ];
+            $fileNames = [];
+            foreach ($fileFields as $field) {
+                $fileNames[$field] = null;
+                if ($request->hasFile($field)) {
+                    $file      = $request->file($field);
+                    $extension = $file->getClientOriginalExtension();
+                    $filename  = Str::random(25) . '.' . $extension;
+                    $file->move($folder, $filename);
+                    $fileNames[$field] = $filename;
+                }
+            }
+
+            $rincian = $kavling->rincian_biaya ?? [];
+
+            $data = [
+                'kode_customer'     => $newKode,
+                'tanggal_verif'     => Carbon::now('Asia/Jakarta'),
+                'id_lokasi'         => $request->id_lokasi,
+                'id_kavling'        => $request->id_kavling,
+                'hrg_jual'          => collect($rincian)->firstWhere('nama', 'Harga Rumah')['nilai'] ?? 0,
+                'biaya_surat'       => collect($rincian)->firstWhere('nama', 'Biaya Surat')['nilai'] ?? 0,
+                'peningkatan_mutu'  => collect($rincian)->firstWhere('nama', 'Peningkatan Mutu')['nilai'] ?? 0,
+                'total_harga'       => $request->total_harga,
+                'id_status_progres' => 9,
+                'nama_lengkap'      => $request->nama_lengkap,
+                'nik'               => $request->nik,
+                'nik_p'             => $request->nik_p ?? '',
+                'jenis_kelamin'     => $request->jenis_kelamin,
+                'tempat_lahir'      => $request->tempat_lahir,
+                'tgl_lahir'         => $request->tgl_lahir,
+                'alamat_ktp'        => $request->alamat_ktp,
+                'alamat_domisili'   => $request->alamat_domisili,
+                'status_pernikahan' => $request->status_pernikahan,
+                'nama_p'            => $request->nama_p ?? '',
+                'nik_p'             => $request->nik_p ?? '',
+                'nama_saudara'      => $request->nama_saudara ?? '',
+                'no_telp_saudara'   => $request->no_telp_saudara ?? '',
+                'no_telp'           => $request->no_telp,
+                'email'             => $request->email ?? '',
+                'npwp'              => $request->npwp ?? '',
+                'no_bpjs_kes'       => $request->no_bpjs_kes ?? '',
+                'pekerjaan'         => $request->pekerjaan ?? '',
+                'id_marketing'      => $request->id_marketing,
+                'jenis_perumahan'   => $request->jenis_perumahan,
+                'jenis_pembelian'   => $request->jenis_pembelian,
+            ];
+
+            $customer = Customer::create($data);
+            $this->logCreate('Customer', $customer->id);
+
+            KavlingPeta::where('id', $request->id_kavling)->update([
+                'status'      => 2,
+                'id_customer' => $customer->id,
+            ]);
+
+            PersyaratanLegal::create([
+                'id_customer' => $customer->id,
+            ]);
+
+            $fileLabels = [
+                'foto_pemohon' => 'Foto Pemohon',
+                'foto_ktp'     => 'Foto KTP',
+                'foto_npwp'    => 'Foto NPWP',
+                'foto_kk'      => 'Foto KK',
+                'foto_bpjs'    => 'Foto BPJS',
+                'foto_ktp_p'   => 'Foto KTP Pasangan',
+                'file_sppr'    => 'Bukti SPPR',
+            ];
+
+            foreach ($fileLabels as $field => $label) {
+                if ($fileNames[$field]) {
+                    UploudFile::create([
+                        'tanggal'     => Carbon::now(),
+                        'id_customer' => $customer->id,
+                        'nama_file'   => $label,
+                        'keterangan'  => '',
+                        'lampiran'    => $fileNames[$field],
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return response()->json(['status' => 'success']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::info('Unit Sudah Laku Error: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error'  => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function store(Request $request)
